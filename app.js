@@ -50,9 +50,15 @@ app.get('/health', (req, res) => {
 
 // Import routers
 const reviewsRouter = require('./routes/reviews');
+const usersRouter = require('./routes/users');
+const countriesRouter = require('./routes/countries');
+const metadataRouter = require('./routes/metadata');
 
 // Mount routers
 app.use('/reviews', reviewsRouter);
+app.use('/users', usersRouter);
+app.use('/countries', countriesRouter);
+app.use('/', metadataRouter);
 
 const errorHandler = require('./middlewares/error');
 
