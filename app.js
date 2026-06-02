@@ -5,6 +5,7 @@ require('dotenv').config();
 
 const logger = require('./middlewares/logger');
 const { sendResponse } = require('./utils/responseHelper');
+const { apiLimiter } = require('./middlewares/rateLimiter');
 
 const app = express();
 
@@ -14,6 +15,9 @@ app.use(express.urlencoded({ extended: true }));
 
 // Enable CORS
 app.use(cors());
+
+// Apply global rate limiter
+app.use(apiLimiter);
 
 // Custom request logger
 app.use(logger);
