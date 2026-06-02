@@ -19,6 +19,15 @@ app.use(cors());
 // Apply global rate limiter
 app.use(apiLimiter);
 
+// Handle OPTIONS and HEAD requests
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD');
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  next();
+});
+
 // Custom request logger
 app.use(logger);
 

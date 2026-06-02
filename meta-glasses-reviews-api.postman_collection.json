@@ -1,0 +1,776 @@
+{
+  "info": {
+    "_postman_id": "893c52ad-8db9-4673-bc1a-6df6e5d87a71",
+    "name": "Meta Glasses Reviews API",
+    "description": "API endpoints for the Meta Glasses Reviews Backend project.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health & Info",
+      "item": [
+        {
+          "name": "API Welcome",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": ["{{base_url}}"],
+              "path": [""]
+            }
+          }
+        },
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": ["{{base_url}}"],
+              "path": ["health"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"johndoe@example.com\",\n  \"password\": \"password123\",\n  \"role\": \"user\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/register",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Login User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"johndoe@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Logout User",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/auth/logout",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "logout"]
+            }
+          }
+        },
+        {
+          "name": "Get Auth User (Me)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/auth/me",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "me"]
+            }
+          }
+        },
+        {
+          "name": "Forgot Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"johndoe@example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/forgotpassword",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "forgotpassword"]
+            }
+          }
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"password\": \"newpassword123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/resetpassword/{{reset_token}}",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "resetpassword", "{{reset_token}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "JWT Profile Protection",
+      "item": [
+        {
+          "name": "Get JWT Profile",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/jwt/profile",
+              "host": ["{{base_url}}"],
+              "path": ["jwt", "profile"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Metadata (Listings)",
+      "item": [
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/users?page=1&limit=10",
+              "host": ["{{base_url}}"],
+              "path": ["users"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get All Countries",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/countries",
+              "host": ["{{base_url}}"],
+              "path": ["countries"]
+            }
+          }
+        },
+        {
+          "name": "Get Ratings Metadata",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/ratings",
+              "host": ["{{base_url}}"],
+              "path": ["ratings"]
+            }
+          }
+        },
+        {
+          "name": "Get Verified Purchases Metadata",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/verified",
+              "host": ["{{base_url}}"],
+              "path": ["verified"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reviews CRUD",
+      "item": [
+        {
+          "name": "Get Reviews (Paginated & Sorted)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/reviews?page=1&limit=5&sort=-date",
+              "host": ["{{base_url}}"],
+              "path": ["reviews"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "5" },
+                { "key": "sort", "value": "-date" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Single Review",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/reviews/R26GJW65W9X4OB",
+              "host": ["{{base_url}}"],
+              "path": ["reviews", "R26GJW65W9X4OB"]
+            }
+          }
+        },
+        {
+          "name": "Create Review",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reviewID\": \"CUSTOM_REVIEW_ID_101\",\n  \"user\": \"Amazon Customer\",\n  \"country\": \"United States\",\n  \"rating\": 5,\n  \"helpful\": 2,\n  \"title\": \"Amazing Ray-Ban Meta Wayfarer Smart Glasses!\",\n  \"review\": \"The audio quality is crystal clear and camera records beautiful videos.\",\n  \"deviceName\": \"Ray-Ban Meta Wayfarer\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/reviews",
+              "host": ["{{base_url}}"],
+              "path": ["reviews"]
+            }
+          }
+        },
+        {
+          "name": "Replace Review (PUT)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rating\": 4,\n  \"title\": \"Really good but battery life is short\",\n  \"review\": \"Great features but battery lasts around 4 hours.\",\n  \"verifiedPurchase\": true,\n  \"helpful\": 5,\n  \"deviceName\": \"Ray-Ban Meta Headliner\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/reviews/CUSTOM_REVIEW_ID_101",
+              "host": ["{{base_url}}"],
+              "path": ["reviews", "CUSTOM_REVIEW_ID_101"]
+            }
+          }
+        },
+        {
+          "name": "Update Rating (PATCH)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rating\": 3\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/reviews/CUSTOM_REVIEW_ID_101/rating",
+              "host": ["{{base_url}}"],
+              "path": ["reviews", "CUSTOM_REVIEW_ID_101", "rating"]
+            }
+          }
+        },
+        {
+          "name": "Soft Delete Review",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/reviews/CUSTOM_REVIEW_ID_101",
+              "host": ["{{base_url}}"],
+              "path": ["reviews", "CUSTOM_REVIEW_ID_101"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Route Param Filters",
+      "item": [
+        {
+          "name": "Get Reviews by User",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/users/Amazon Customer/reviews",
+              "host": ["{{base_url}}"],
+              "path": ["users", "Amazon Customer", "reviews"]
+            }
+          }
+        },
+        {
+          "name": "Get Reviews by Country",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/country/United States/reviews",
+              "host": ["{{base_url}}"],
+              "path": ["country", "United States", "reviews"]
+            }
+          }
+        },
+        {
+          "name": "Get Reviews by Rating",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/ratings/5",
+              "host": ["{{base_url}}"],
+              "path": ["ratings", "5"]
+            }
+          }
+        },
+        {
+          "name": "Get Verified Purchase Reviews",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/verified/true",
+              "host": ["{{base_url}}"],
+              "path": ["verified", "true"]
+            }
+          }
+        },
+        {
+          "name": "Get Country and Rating Reviews",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/reviews/country/United States/rating/5",
+              "host": ["{{base_url}}"],
+              "path": ["reviews", "country", "United States", "rating", "5"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Route Filter Routes",
+      "item": [
+        {
+          "name": "Get Reviews by Title Match",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/reviews/title/love",
+              "host": ["{{base_url}}"],
+              "path": ["reviews", "title", "love"]
+            }
+          }
+        },
+        {
+          "name": "Get Reviews by Helpful Count Threshold",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/reviews/helpful/10",
+              "host": ["{{base_url}}"],
+              "path": ["reviews", "helpful", "10"]
+            }
+          }
+        },
+        {
+          "name": "Get Positive Reviews List",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/reviews/positive",
+              "host": ["{{base_url}}"],
+              "path": ["reviews", "positive"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Extra Param Routes",
+      "item": [
+        {
+          "name": "Get Reviews by Year",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/reviews/year/2024",
+              "host": ["{{base_url}}"],
+              "path": ["reviews", "year", "2024"]
+            }
+          }
+        },
+        {
+          "name": "Get Reviews by Helpfulness Score Threshold",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/reviews/helpful-score/0.5",
+              "host": ["{{base_url}}"],
+              "path": ["reviews", "helpful-score", "0.5"]
+            }
+          }
+        },
+        {
+          "name": "Get Reviews by Device Name",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/reviews/device/Wayfarer",
+              "host": ["{{base_url}}"],
+              "path": ["reviews", "device", "Wayfarer"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Global Search",
+      "item": [
+        {
+          "name": "Global Search Across Fields",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/search?q=meta",
+              "host": ["{{base_url}}"],
+              "path": ["search"],
+              "query": [
+                { "key": "q", "value": "meta" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Statistics & Analytics",
+      "item": [
+        {
+          "name": "Ratings Stats & Distribution",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/reviews/stats/ratings",
+              "host": ["{{base_url}}"],
+              "path": ["reviews", "stats", "ratings"]
+            }
+          }
+        },
+        {
+          "name": "Device Metrics Stats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/reviews/stats/devices",
+              "host": ["{{base_url}}"],
+              "path": ["reviews", "stats", "devices"]
+            }
+          }
+        },
+        {
+          "name": "Verified vs Unverified Metrics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/reviews/stats/verified",
+              "host": ["{{base_url}}"],
+              "path": ["reviews", "stats", "verified"]
+            }
+          }
+        },
+        {
+          "name": "Top Reviewers Leaderboard",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/reviews/stats/reviewers",
+              "host": ["{{base_url}}"],
+              "path": ["reviews", "stats", "reviewers"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Comparisons & Fetch",
+      "item": [
+        {
+          "name": "Compare Two Users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/reviews/compare/users?user1=Amazon Customer&user2=Purnansh Patel",
+              "host": ["{{base_url}}"],
+              "path": ["reviews", "compare", "users"],
+              "query": [
+                { "key": "user1", "value": "Amazon Customer" },
+                { "key": "user2", "value": "Purnansh Patel" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Compare Two Ratings (5 vs 1)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/reviews/compare/ratings?rating1=5&rating2=1",
+              "host": ["{{base_url}}"],
+              "path": ["reviews", "compare", "ratings"],
+              "query": [
+                { "key": "rating1", "value": "5" },
+                { "key": "rating2", "value": "1" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Fetch Random Reviews",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/reviews/fetch/random?limit=3",
+              "host": ["{{base_url}}"],
+              "path": ["reviews", "fetch", "random"],
+              "query": [
+                { "key": "limit", "value": "3" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Fetch Trending Reviews",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/reviews/fetch/trending?limit=5",
+              "host": ["{{base_url}}"],
+              "path": ["reviews", "fetch", "trending"],
+              "query": [
+                { "key": "limit", "value": "5" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin Operations",
+      "item": [
+        {
+          "name": "Admin Dashboard",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/admin/dashboard",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "dashboard"]
+            }
+          }
+        },
+        {
+          "name": "Admin All Reviews Audit",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/admin/reviews?page=1&limit=20",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "reviews"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Admin Restore Review",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/admin/reviews/CUSTOM_REVIEW_ID_101/restore",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "reviews", "CUSTOM_REVIEW_ID_101", "restore"]
+            }
+          }
+        },
+        {
+          "name": "Admin Hard Delete Review",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/admin/reviews/CUSTOM_REVIEW_ID_101/hard",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "reviews", "CUSTOM_REVIEW_ID_101", "hard"]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5000",
+      "type": "string"
+    },
+    {
+      "key": "auth_token",
+      "value": "your_jwt_token_here",
+      "type": "string"
+    },
+    {
+      "key": "reset_token",
+      "value": "your_password_reset_token_here",
+      "type": "string"
+    }
+  ]
+}
