@@ -57,8 +57,10 @@ const countriesRouter = require('./routes/countries');
 const metadataRouter = require('./routes/metadata');
 const paramRoutesRouter = require('./routes/paramRoutes');
 const searchRouter = require('./routes/search');
+const statsRouter = require('./routes/stats');
 
 // Mount routers
+app.use('/reviews/stats', statsRouter);
 app.use('/reviews', filterRoutesRouter);
 app.use('/reviews', extraParamRoutesRouter);
 app.use('/reviews', reviewsRouter);
