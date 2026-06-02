@@ -1,4 +1,5 @@
 const ErrorResponse = require('../utils/errorResponse');
+const { sendResponse } = require('../utils/responseHelper');
 
 const errorHandler = (err, req, res, next) => {
   let error = { ...err };
@@ -29,10 +30,7 @@ const errorHandler = (err, req, res, next) => {
   }
 
   // Return formatted JSON response
-  res.status(error.statusCode || 500).json({
-    success: false,
-    error: error.message || 'Server Error'
-  });
+  sendResponse(res, error.statusCode || 500, false, error.message || 'Server Error', null, error.message || 'Server Error');
 };
 
 module.exports = errorHandler;
