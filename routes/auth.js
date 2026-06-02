@@ -8,14 +8,15 @@ const {
   getMe
 } = require('../controllers/auth');
 const { protect } = require('../middlewares/auth');
+const { authLimiter } = require('../middlewares/rateLimiter');
 
 const router = express.Router();
 
-router.post('/register', register);
-router.post('/login', login);
+router.post('/register', authLimiter, register);
+router.post('/login', authLimiter, login);
 router.get('/logout', logout);
 router.get('/me', protect, getMe);
-router.post('/forgotpassword', forgotPassword);
-router.put('/resetpassword/:resettoken', resetPassword);
+router.post('/forgotpassword', authLimiter, forgotPassword);
+router.put('/resetpassword/:resettoken', authLimiter, resetPassword);
 
 module.exports = router;
