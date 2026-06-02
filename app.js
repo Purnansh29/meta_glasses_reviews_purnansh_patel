@@ -4,6 +4,7 @@ const morgan = require('morgan');
 require('dotenv').config();
 
 const logger = require('./middlewares/logger');
+const { sendResponse } = require('./utils/responseHelper');
 
 const app = express();
 
@@ -24,10 +25,7 @@ if (process.env.NODE_ENV === 'development') {
 
 // Basic route for testing
 app.get('/', (req, res) => {
-  res.json({
-    success: true,
-    message: 'Welcome to Meta Glasses Reviews API'
-  });
+  sendResponse(res, 200, true, 'Welcome to Meta Glasses Reviews API');
 });
 
 // Health check endpoint
