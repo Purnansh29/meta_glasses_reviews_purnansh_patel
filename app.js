@@ -3,6 +3,8 @@ const cors = require('cors');
 const morgan = require('morgan');
 require('dotenv').config();
 
+const logger = require('./middlewares/logger');
+
 const app = express();
 
 // Body parsers
@@ -11,6 +13,9 @@ app.use(express.urlencoded({ extended: true }));
 
 // Enable CORS
 app.use(cors());
+
+// Custom request logger
+app.use(logger);
 
 // Dev logging middleware
 if (process.env.NODE_ENV === 'development') {
