@@ -50,5 +50,9 @@ app.get('/health', (req, res) => {
   });
 });
 
+const errorHandler = require('./middlewares/error');
+
+// Centralized error handler
+app.use(errorHandler);
 
 module.exports = app;
