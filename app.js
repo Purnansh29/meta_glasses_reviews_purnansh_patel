@@ -56,6 +56,7 @@ const usersRouter = require('./routes/users');
 const countriesRouter = require('./routes/countries');
 const metadataRouter = require('./routes/metadata');
 const paramRoutesRouter = require('./routes/paramRoutes');
+const searchRouter = require('./routes/search');
 
 // Mount routers
 app.use('/reviews', filterRoutesRouter);
@@ -63,6 +64,7 @@ app.use('/reviews', extraParamRoutesRouter);
 app.use('/reviews', reviewsRouter);
 app.use('/users', usersRouter);
 app.use('/countries', countriesRouter);
+app.use('/search', searchRouter);
 app.use('/', metadataRouter);
 app.use('/', paramRoutesRouter);
 
