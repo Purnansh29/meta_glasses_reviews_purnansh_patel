@@ -25,4 +25,25 @@ app.get('/', (req, res) => {
   });
 });
 
+// Health check endpoint
+app.get('/health', (req, res) => {
+  const mongooseState = require('mongoose').connection.readyState;
+  const states = {
+    0: 'disconnected',
+    1: 'connected',
+    2: 'connecting',
+    3: 'disconnecting'
+  };
+  
+  const dbStatus = states[mongooseState] || 'unknown';
+  
+  res.json({
+    success: true,
+    status: 'UP',
+    database: dbStatus,
+    timestamp: new Date()
+  });
+});
+
+
 module.exports = app;
