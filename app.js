@@ -65,11 +65,13 @@ const statsRouter = require('./routes/stats');
 const authRouter = require('./routes/auth');
 const jwtRouter = require('./routes/jwt');
 const adminRouter = require('./routes/admin');
+const compareRouter = require('./routes/compare');
 
 // Mount routers
 app.use('/reviews/stats', statsRouter);
 app.use('/reviews', filterRoutesRouter);
 app.use('/reviews', extraParamRoutesRouter);
+app.use('/reviews', compareRouter);
 app.use('/reviews', reviewsRouter);
 app.use('/users', usersRouter);
 app.use('/countries', countriesRouter);
