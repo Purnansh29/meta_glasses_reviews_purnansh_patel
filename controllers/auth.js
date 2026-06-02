@@ -141,3 +141,11 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
 
   sendTokenResponse(user, 200, res, 'Password reset successfully');
 });
+
+// @desc    Get current logged in user
+// @route   GET /auth/me or GET /jwt/profile
+// @access  Private
+exports.getMe = asyncHandler(async (req, res, next) => {
+  const user = await User.findById(req.user.id);
+  sendResponse(res, 200, true, 'User profile retrieved successfully', user);
+});
