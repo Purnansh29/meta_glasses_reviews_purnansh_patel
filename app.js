@@ -50,6 +50,7 @@ app.get('/health', (req, res) => {
 
 // Import routers
 const filterRoutesRouter = require('./routes/filterRoutes');
+const extraParamRoutesRouter = require('./routes/extraParamRoutes');
 const reviewsRouter = require('./routes/reviews');
 const usersRouter = require('./routes/users');
 const countriesRouter = require('./routes/countries');
@@ -58,6 +59,7 @@ const paramRoutesRouter = require('./routes/paramRoutes');
 
 // Mount routers
 app.use('/reviews', filterRoutesRouter);
+app.use('/reviews', extraParamRoutesRouter);
 app.use('/reviews', reviewsRouter);
 app.use('/users', usersRouter);
 app.use('/countries', countriesRouter);
