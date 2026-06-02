@@ -48,6 +48,12 @@ app.get('/health', (req, res) => {
   });
 });
 
+// Import routers
+const reviewsRouter = require('./routes/reviews');
+
+// Mount routers
+app.use('/reviews', reviewsRouter);
+
 const errorHandler = require('./middlewares/error');
 
 // Centralized error handler
