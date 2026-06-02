@@ -3,18 +3,26 @@ const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middlewares/asyncHandler');
 const { sendResponse } = require('../utils/responseHelper');
 
+const queryFeatures = require('../utils/queryFeatures');
+
 // @desc      Get all reviews
 // @route     GET /reviews
 // @access    Public
 exports.getReviews = asyncHandler(async (req, res, next) => {
-  // We exclude soft-deleted reviews
-  const reviews = await Review.find({ isDeleted: false })
-    .populate('user', 'name profile')
-    .populate('country', 'name code');
+  const { results, pagination } = await queryFeatures(
+    Review,
+    req.query,
+    [
+      { path: 'user', select: 'name profile' },
+      { path: 'country', select: 'name code' }
+    ],
+    { isDeleted: false }
+  );
 
   sendResponse(res, 200, true, 'Reviews retrieved successfully', {
-    count: reviews.length,
-    reviews
+    count: results.length,
+    pagination,
+    reviews: results
   });
 });
 
