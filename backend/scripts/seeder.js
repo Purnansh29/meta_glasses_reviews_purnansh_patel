@@ -7,9 +7,9 @@ const bcrypt = require('bcryptjs');
 dotenv.config({ path: './.env' });
 
 // Load models
-const User = require('../models/User');
-const Country = require('../models/Country');
-const Review = require('../models/Review');
+const User = require('../src/models/User');
+const Country = require('../src/models/Country');
+const Review = require('../src/models/Review');
 
 // Connect to DB
 mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/meta-reviews');
