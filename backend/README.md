@@ -136,6 +136,3 @@ All routes below require JWT validation (`protect`) and an admin role (`authoriz
 
 ---
 
-## Postman Collection
-
-A pre-configured Postman Collection is exported directly to [meta-glasses-reviews-api.postman_collection.json](./meta-glasses-reviews-api.postman_collection.json) in the workspace root. Import it into your Postman client to test endpoints with ease.
