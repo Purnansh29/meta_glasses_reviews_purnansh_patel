@@ -10,6 +10,7 @@ export const ReviewCard = ({ reviewData, onReviewUpdated }) => {
   const [hasVoted, setHasVoted] = useState(false);
   const [voting, setVoting] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const {
     _id,
@@ -91,7 +92,30 @@ export const ReviewCard = ({ reviewData, onReviewUpdated }) => {
       </div>
 
       <h3 className="review-card-title">{title}</h3>
-      <p className="review-card-body">{review}</p>
+      <div className="review-card-body">
+        <p style={{ margin: 0 }}>
+          {isExpanded || !review || review.length <= 250 
+            ? review 
+            : `${review.substring(0, 250)}...`}
+        </p>
+        {review && review.length > 250 && (
+          <button 
+            onClick={() => setIsExpanded(!isExpanded)} 
+            className="auth-link"
+            style={{ 
+              background: 'none', 
+              border: 'none', 
+              padding: 0, 
+              fontSize: '0.85rem', 
+              marginTop: '4px', 
+              cursor: 'pointer',
+              fontWeight: '500'
+            }}
+          >
+            {isExpanded ? 'Show Less' : 'Read More'}
+          </button>
+        )}
+      </div>
 
       <div className="review-card-footer">
         <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
