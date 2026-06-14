@@ -1,10 +1,12 @@
 import React from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Glasses, LayoutDashboard, Compass, Shield, LogOut, LogIn } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
+import { Glasses, LayoutDashboard, Compass, Shield, LogOut, LogIn, User, Sun, Moon, Database } from 'lucide-react';
 
 export const Navbar = () => {
   const { user, isAuthenticated, isAdmin, logout } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -31,6 +33,11 @@ export const Navbar = () => {
             <span>Explore</span>
           </NavLink>
 
+          <NavLink to="/advanced" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
+            <Database size={18} />
+            <span>Advanced Queries</span>
+          </NavLink>
+
           {isAuthenticated && isAdmin && (
             <NavLink to="/admin" className={({ isActive }) => `nav-item nav-admin ${isActive ? 'active' : ''}`}>
               <Shield size={18} />
@@ -39,13 +46,17 @@ export const Navbar = () => {
           )}
         </div>
 
-        <div className="navbar-actions">
+        <div className="navbar-actions" style={{ gap: '16px' }}>
+          <button onClick={toggleTheme} className="btn btn-secondary btn-sm" style={{ padding: '8px' }} title="Toggle Theme">
+            {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+          </button>
+
           {isAuthenticated ? (
             <div className="user-profile-menu">
-              <div className="user-info">
+              <Link to="/profile" className="user-info" style={{ textDecoration: 'none' }}>
                 <span className="user-name">{user.name}</span>
                 <span className="user-role">{user.role}</span>
-              </div>
+              </Link>
               <button onClick={handleLogout} className="btn btn-secondary btn-sm logout-btn">
                 <LogOut size={16} />
                 <span>Logout</span>

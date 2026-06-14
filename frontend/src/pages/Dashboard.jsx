@@ -5,6 +5,9 @@ import {
   Flag, Award, Globe, TrendingUp, Sparkles 
 } from 'lucide-react';
 import { ReviewCard } from '../components/ReviewCard';
+import { PieChart, Pie, Cell, Tooltip as RechartsTooltip, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
+
+const COLORS = ['#10b981', '#3b82f6', '#f59e0b', '#f97316', '#ef4444'];
 
 export const Dashboard = () => {
   const [stats, setStats] = useState(null);
@@ -129,62 +132,63 @@ export const Dashboard = () => {
 
       {/* Main Analytics Block */}
       <div className="analytics-grid">
-        {/* Ratings & Volume chart (Custom SVG / CSS representation) */}
+        {/* Ratings Pie Chart */}
         <div className="glass-card chart-container">
-          <div>
-            <h3 className="chart-title">
-              <span>Rating Distribution</span>
-              <span className="badge badge-primary">Percentage</span>
-            </h3>
-            
-            <div style={{ marginTop: '20px' }}>
-              {[5, 4, 3, 2, 1].map(star => {
-                const distItem = stats?.distribution?.find(d => d.rating === star);
-                const pct = distItem?.percentage || 0;
-                const count = distItem?.count || 0;
-                
-                return (
-                  <div key={star} className="bar-chart-row">
-                    <div className="bar-label">{star} Star</div>
-                    <div className="bar-wrapper">
-                      <div className="bar-fill" style={{ width: `${pct}%` }}></div>
-                    </div>
-                    <div className="bar-value">{pct}% <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>({count})</span></div>
-                  </div>
-                );
-              })}
-            </div>
+          <h3 className="chart-title">
+            <span>Rating Distribution</span>
+            <span className="badge badge-primary">Percentage</span>
+          </h3>
+          
+          <div style={{ height: '300px', marginTop: '20px' }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={stats?.distribution?.map(d => ({ name: `${d.rating} Star`, value: d.percentage, count: d.count })).reverse() || []}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={60}
+                  outerRadius={100}
+                  paddingAngle={5}
+                  dataKey="value"
+                >
+                  {(stats?.distribution || []).map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <RechartsTooltip 
+                  contentStyle={{ backgroundColor: 'rgba(15, 23, 42, 0.9)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: 'white' }}
+                  itemStyle={{ color: 'white' }}
+                  formatter={(value, name, props) => [`${value.toFixed(1)}% (${props.payload.count} reviews)`, name]}
+                />
+              </PieChart>
+            </ResponsiveContainer>
           </div>
         </div>
 
-        {/* Device Contrast */}
+        {/* Device Bar Chart */}
         <div className="glass-card">
           <h3 className="chart-title">
             <span>Device Performance</span>
             <span className="badge badge-secondary">Comparison</span>
           </h3>
 
-          <div className="device-compare" style={{ marginTop: '20px' }}>
-            {devices.map(device => {
-              const isHeadliner = device.deviceName.toLowerCase().includes('headliner');
-              // Calculate relative volume against total reviews for the visual bar fill
-              const relativeVol = totalReviewsCount > 0 ? (device.totalReviews / totalReviewsCount) * 100 : 0;
-              
-              return (
-                <div key={device.deviceName} className="device-row">
-                  <div className="device-header">
-                    <span className="device-name">{device.deviceName}</span>
-                    <span className="device-meta">{device.totalReviews} reviews ({device.averageRating} Avg)</span>
-                  </div>
-                  <div className="device-stat-bar">
-                    <div 
-                      className={`device-stat-fill ${isHeadliner ? 'headliner' : ''}`}
-                      style={{ width: `${relativeVol}%` }}
-                    ></div>
-                  </div>
-                </div>
-              );
-            })}
+          <div style={{ height: '300px', marginTop: '20px' }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart
+                data={devices.map(d => ({ name: d.deviceName.split(' ')[0], reviews: d.totalReviews, rating: d.averageRating }))}
+                margin={{ top: 20, right: 30, left: 0, bottom: 5 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" vertical={false} />
+                <XAxis dataKey="name" stroke="rgba(255,255,255,0.5)" tick={{fill: 'rgba(255,255,255,0.7)'}} />
+                <YAxis yAxisId="left" orientation="left" stroke="rgba(255,255,255,0.5)" tick={{fill: 'rgba(255,255,255,0.7)'}} />
+                <YAxis yAxisId="right" orientation="right" stroke="rgba(255,255,255,0.5)" tick={{fill: 'rgba(255,255,255,0.7)'}} />
+                <RechartsTooltip 
+                  contentStyle={{ backgroundColor: 'rgba(15, 23, 42, 0.9)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px' }}
+                />
+                <Bar yAxisId="left" dataKey="reviews" name="Total Reviews" fill="var(--primary)" radius={[4, 4, 0, 0]} />
+                <Bar yAxisId="right" dataKey="rating" name="Avg Rating" fill="var(--warning)" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
           </div>
         </div>
       </div>

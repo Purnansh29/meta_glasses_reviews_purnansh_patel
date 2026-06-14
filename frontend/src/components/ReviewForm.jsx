@@ -3,7 +3,7 @@ import { api } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { X, Star, Sparkles } from 'lucide-react';
 
-export const ReviewForm = ({ isOpen, onClose, onReviewSubmitted }) => {
+export const ReviewForm = ({ isOpen, onClose, onReviewSubmitted, initialData = null }) => {
   const { user } = useAuth();
   const [countries, setCountries] = useState([]);
   const [formData, setFormData] = useState({
@@ -17,6 +17,7 @@ export const ReviewForm = ({ isOpen, onClose, onReviewSubmitted }) => {
     reviewLink: '',
     reviewImage: ''
   });
+  const [isEditing, setIsEditing] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
 
@@ -39,8 +40,28 @@ export const ReviewForm = ({ isOpen, onClose, onReviewSubmitted }) => {
 
     if (isOpen) {
       fetchCountries();
+      if (initialData) {
+        setIsEditing(true);
+        setFormData({
+          title: initialData.title || '',
+          review: initialData.review || '',
+          rating: initialData.rating || 5,
+          deviceName: initialData.deviceName || 'Ray-Ban Meta Wayfarer',
+          verifiedPurchase: initialData.verifiedPurchase || false,
+          countryId: initialData.country?._id || '',
+          profile: initialData.profile || '',
+          reviewLink: initialData.reviewLink || '',
+          reviewImage: initialData.reviewImage || ''
+        });
+      } else {
+        setIsEditing(false);
+        setFormData({
+          title: '', review: '', rating: 5, deviceName: 'Ray-Ban Meta Wayfarer',
+          verifiedPurchase: true, countryId: '', profile: '', reviewLink: '', reviewImage: ''
+        });
+      }
     }
-  }, [isOpen]);
+  }, [isOpen, initialData]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -84,7 +105,13 @@ export const ReviewForm = ({ isOpen, onClose, onReviewSubmitted }) => {
         reviewImage: formData.reviewImage
       };
 
-      const response = await api.post('/reviews', payload);
+      let response;
+      if (isEditing) {
+        response = await api.put(`/reviews/${initialData.reviewID}`, payload);
+      } else {
+        response = await api.post('/reviews', payload);
+      }
+      
       if (response.success) {
         onReviewSubmitted(response.data);
         // Reset form
@@ -121,7 +148,7 @@ export const ReviewForm = ({ isOpen, onClose, onReviewSubmitted }) => {
 
         <h2 style={{ fontSize: '1.6rem', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '8px' }}>
           <Sparkles className="logo-accent" size={24} />
-          <span>Write a Review</span>
+          <span>{isEditing ? 'Edit Review' : 'Write a Review'}</span>
         </h2>
 
         {error && <div className="error-banner">{error}</div>}
@@ -240,7 +267,7 @@ export const ReviewForm = ({ isOpen, onClose, onReviewSubmitted }) => {
           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '24px' }}>
             <button type="button" onClick={onClose} className="btn btn-secondary">Cancel</button>
             <button type="submit" className="btn btn-primary" disabled={submitting}>
-              {submitting ? 'Submitting...' : 'Post Review'}
+              {submitting ? 'Submitting...' : isEditing ? 'Update Review' : 'Post Review'}
             </button>
           </div>
         </form>

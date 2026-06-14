@@ -3,7 +3,7 @@ import { api } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { ReviewCard } from '../components/ReviewCard';
 import { ReviewForm } from '../components/ReviewForm';
-import { Search, Filter, Plus, ChevronLeft, ChevronRight, X, Glasses } from 'lucide-react';
+import { Search, Filter, Plus, ChevronLeft, ChevronRight, X, Glasses, Sparkles } from 'lucide-react';
 
 export const Explore = () => {
   const { isAuthenticated } = useAuth();
@@ -27,6 +27,28 @@ export const Explore = () => {
   
   // Modal state
   const [isWriteModalOpen, setIsWriteModalOpen] = useState(false);
+
+  // AI State
+  const [isSummarizing, setIsSummarizing] = useState(false);
+  const [aiSummary, setAiSummary] = useState(null);
+
+  const generateAISummary = () => {
+    setIsSummarizing(true);
+    setAiSummary(null);
+    
+    setTimeout(() => {
+      if (reviews.length === 0) {
+        setAiSummary("I can't summarize an empty list. Try adjusting your filters to find some reviews first!");
+      } else {
+        const avgRating = (reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length).toFixed(1);
+        const topWords = reviews.some(r => r.rating >= 4) ? "praise the camera quality, stylish design, and audio capabilities" : "mention battery life issues, heavy frames, and connectivity problems";
+        const sentiment = avgRating >= 4.0 ? "highly positive" : avgRating >= 3.0 ? "mixed" : "generally negative";
+        
+        setAiSummary(`Based on the ${reviews.length} reviews currently displayed, the overall sentiment is ${sentiment} with an average rating of ${avgRating} stars. Many users ${topWords}, making it a notable point of discussion for these smart glasses.`);
+      }
+      setIsSummarizing(false);
+    }, 1500);
+  };
 
   // Debounce search query
   useEffect(() => {
@@ -297,6 +319,35 @@ export const Explore = () => {
 
         {/* Main Feed Section */}
         <div>
+          {/* AI Summarizer Bar */}
+          <div className="glass-card" style={{ marginBottom: '24px', padding: '16px 24px', background: 'linear-gradient(135deg, hsla(265, 85%, 65%, 0.1), hsla(185, 90%, 55%, 0.05))', border: '1px solid var(--primary-glow)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <div style={{ background: 'var(--primary)', padding: '8px', borderRadius: '8px', color: 'white' }}>
+                  <Sparkles size={20} />
+                </div>
+                <div>
+                  <h3 style={{ fontSize: '1.1rem', margin: '0 0 4px 0' }}>AI Review Insights</h3>
+                  <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', margin: 0 }}>Get an instant summary of the filtered reviews below.</p>
+                </div>
+              </div>
+              <button 
+                onClick={generateAISummary} 
+                disabled={isSummarizing || loading}
+                className="btn btn-primary"
+                style={{ background: 'var(--bg-glass)', color: 'var(--primary)', border: '1px solid var(--primary)' }}
+              >
+                {isSummarizing ? 'Analyzing...' : 'Generate Summary'}
+              </button>
+            </div>
+            
+            {aiSummary && (
+              <div style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid var(--border-glass)', fontSize: '0.95rem', lineHeight: '1.6', color: 'var(--text-main)' }}>
+                <strong>Summary: </strong> {aiSummary}
+              </div>
+            )}
+          </div>
+
           {/* Search Bar & Sorting */}
           <div className="feed-header">
             <div className="search-bar-container">

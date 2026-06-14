@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { api } from '../services/api';
+import toast from 'react-hot-toast';
 
 const AuthContext = createContext(null);
 
@@ -46,12 +47,14 @@ export const AuthProvider = ({ children }) => {
         // Fetch user profile immediately
         const meResponse = await api.get('/auth/me');
         setUser(meResponse.data);
+        toast.success('Successfully logged in!');
         return meResponse.data;
       } else {
         throw new Error(response.message || 'Login failed');
       }
     } catch (err) {
       setError(err.message);
+      toast.error(err.message || 'Login failed');
       throw err;
     } finally {
       setLoading(false);
@@ -68,12 +71,14 @@ export const AuthProvider = ({ children }) => {
         // Fetch user profile immediately
         const meResponse = await api.get('/auth/me');
         setUser(meResponse.data);
+        toast.success('Successfully registered!');
         return meResponse.data;
       } else {
         throw new Error(response.message || 'Registration failed');
       }
     } catch (err) {
       setError(err.message);
+      toast.error(err.message || 'Registration failed');
       throw err;
     } finally {
       setLoading(false);
@@ -83,6 +88,7 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     try {
       await api.get('/auth/logout');
+      toast.success('Logged out successfully');
     } catch (err) {
       console.warn('Backend logout warning:', err.message);
     } finally {
