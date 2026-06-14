@@ -174,6 +174,7 @@ export const AuthPage = () => {
             />
           </div>
 
+          <div className="form-group">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
               <label className="form-label" style={{ marginBottom: 0 }}>Password *</label>
               {isLoginTab && (
