@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { api } from '../services/api';
 import { Glasses, Sparkles } from 'lucide-react';
 
 export const AuthPage = () => {
@@ -9,6 +10,7 @@ export const AuthPage = () => {
   const location = useLocation();
   
   const [isLoginTab, setIsLoginTab] = useState(true);
+  const [isForgotTab, setIsForgotTab] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -25,6 +27,23 @@ export const AuthPage = () => {
       ...prev,
       [e.target.name]: e.target.value
     }));
+  };
+
+  const handleForgotSubmit = async (e) => {
+    e.preventDefault();
+    setError(null);
+    setSubmitting(true);
+    try {
+      if (!formData.email) throw new Error('Please enter your email.');
+      const response = await api.post('/auth/forgotpassword', { email: formData.email });
+      alert(response.message || 'Password reset email sent (check backend console in dev mode).');
+      setIsForgotTab(false);
+      setIsLoginTab(true);
+    } catch (err) {
+      setError(err.message || 'Failed to send reset email.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -57,6 +76,7 @@ export const AuthPage = () => {
   };
 
   const handleTabChange = (isLogin) => {
+    setIsForgotTab(false);
     setIsLoginTab(isLogin);
     setError(null);
     setFormData({
@@ -96,7 +116,36 @@ export const AuthPage = () => {
 
         {error && <div className="error-banner">{error}</div>}
 
-        <form onSubmit={handleSubmit}>
+        {isForgotTab ? (
+          <form onSubmit={handleForgotSubmit}>
+            <div className="form-group">
+              <label className="form-label">Email Address *</label>
+              <input 
+                type="email" 
+                name="email" 
+                value={formData.email} 
+                onChange={handleChange}
+                placeholder="Enter your email to reset password"
+                className="form-input"
+                required 
+              />
+            </div>
+            <button 
+              type="submit" 
+              className="btn btn-primary" 
+              style={{ width: '100%', marginTop: '16px', height: '48px' }}
+              disabled={submitting}
+            >
+              {submitting ? 'Sending...' : 'Send Reset Link'}
+            </button>
+            <p className="auth-footer-link" style={{ marginTop: '16px' }}>
+              <span onClick={() => setIsForgotTab(false)} className="auth-link">
+                Back to Sign In
+              </span>
+            </p>
+          </form>
+        ) : (
+          <form onSubmit={handleSubmit}>
           {!isLoginTab && (
             <div className="form-group">
               <label className="form-label">Username *</label>
@@ -126,7 +175,14 @@ export const AuthPage = () => {
           </div>
 
           <div className="form-group">
-            <label className="form-label">Password *</label>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+              <label className="form-label" style={{ marginBottom: 0 }}>Password *</label>
+              {isLoginTab && (
+                <span onClick={() => setIsForgotTab(true)} className="auth-link" style={{ fontSize: '0.8rem', cursor: 'pointer' }}>
+                  Forgot Password?
+                </span>
+              )}
+            </div>
             <input 
               type="password" 
               name="password" 
@@ -147,24 +203,27 @@ export const AuthPage = () => {
             {submitting ? 'Authenticating...' : isLoginTab ? 'Sign In' : 'Create Account'}
           </button>
         </form>
+        )}
 
-        <p className="auth-footer-link">
-          {isLoginTab ? (
-            <>
-              New to Meta Glasses?{' '}
-              <span onClick={() => handleTabChange(false)} className="auth-link">
-                Create an account
-              </span>
-            </>
-          ) : (
-            <>
-              Already have an account?{' '}
-              <span onClick={() => handleTabChange(true)} className="auth-link">
-                Sign in
-              </span>
-            </>
-          )}
-        </p>
+        {!isForgotTab && (
+          <p className="auth-footer-link">
+            {isLoginTab ? (
+              <>
+                New to Meta Glasses?{' '}
+                <span onClick={() => handleTabChange(false)} className="auth-link">
+                  Create an account
+                </span>
+              </>
+            ) : (
+              <>
+                Already have an account?{' '}
+                <span onClick={() => handleTabChange(true)} className="auth-link">
+                  Sign in
+                </span>
+              </>
+            )}
+          </p>
+        )}
       </div>
     </div>
   );

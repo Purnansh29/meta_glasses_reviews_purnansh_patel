@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
-import { Star, ThumbsUp, Calendar, Globe, ShieldCheck, ShieldAlert, Award } from 'lucide-react';
+import { Star, ThumbsUp, Calendar, Globe, ShieldCheck, ShieldAlert, Award, Edit } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { api } from '../services/api';
+import { ReviewForm } from './ReviewForm';
 
 export const ReviewCard = ({ reviewData, onReviewUpdated }) => {
   const { user } = useAuth();
   const [helpfulCount, setHelpfulCount] = useState(reviewData.helpful + (reviewData.helpful_aug || 0));
   const [hasVoted, setHasVoted] = useState(false);
   const [voting, setVoting] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const {
     _id,
@@ -42,6 +45,12 @@ export const ReviewCard = ({ reviewData, onReviewUpdated }) => {
       console.error('Failed to upvote review:', error.message);
     } finally {
       setVoting(false);
+    }
+  };
+
+  const handleReviewUpdated = (updatedReview) => {
+    if (onReviewUpdated) {
+      onReviewUpdated(updatedReview);
     }
   };
 
@@ -83,7 +92,30 @@ export const ReviewCard = ({ reviewData, onReviewUpdated }) => {
       </div>
 
       <h3 className="review-card-title">{title}</h3>
-      <p className="review-card-body">{review}</p>
+      <div className="review-card-body">
+        <p style={{ margin: 0 }}>
+          {isExpanded || !review || review.length <= 250 
+            ? review 
+            : `${review.substring(0, 250)}...`}
+        </p>
+        {review && review.length > 250 && (
+          <button 
+            onClick={() => setIsExpanded(!isExpanded)} 
+            className="auth-link"
+            style={{ 
+              background: 'none', 
+              border: 'none', 
+              padding: 0, 
+              fontSize: '0.85rem', 
+              marginTop: '4px', 
+              cursor: 'pointer',
+              fontWeight: '500'
+            }}
+          >
+            {isExpanded ? 'Show Less' : 'Read More'}
+          </button>
+        )}
+      </div>
 
       <div className="review-card-footer">
         <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
@@ -113,7 +145,25 @@ export const ReviewCard = ({ reviewData, onReviewUpdated }) => {
           <ThumbsUp size={14} />
           <span>Helpful ({helpfulCount})</span>
         </button>
+
+        {(user?._id === reviewer?._id || user?.role === 'admin') && (
+          <button 
+            onClick={() => setIsEditModalOpen(true)} 
+            className="btn-helpful"
+            style={{ marginLeft: 'auto' }}
+          >
+            <Edit size={14} />
+            <span>Edit</span>
+          </button>
+        )}
       </div>
+
+      <ReviewForm 
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        onReviewSubmitted={handleReviewUpdated}
+        initialData={reviewData}
+      />
     </div>
   );
 };

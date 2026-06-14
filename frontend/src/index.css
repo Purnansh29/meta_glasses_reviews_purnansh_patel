@@ -37,6 +37,35 @@
   /* Transitions */
   --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Component specific backgrounds */
+  --input-bg: hsla(225, 20%, 8%, 0.8);
+  --input-bg-focus: hsla(225, 20%, 12%, 0.9);
+  --navbar-bg: hsla(225, 25%, 4%, 0.7);
+  --card-bg-alt: hsla(225, 20%, 8%, 0.4);
+  --card-bg-alt-hover: hsla(225, 20%, 8%, 0.45);
+}
+
+body.light-mode {
+  --bg-color: hsl(210, 20%, 96%);
+  --bg-glass: hsla(0, 0%, 100%, 0.65);
+  --bg-glass-hover: hsla(0, 0%, 100%, 0.85);
+  --border-glass: rgba(0, 0, 0, 0.08);
+  --border-glass-active: rgba(0, 0, 0, 0.18);
+  
+  --text-main: hsl(220, 15%, 15%);
+  --text-muted: hsl(215, 15%, 45%);
+  --text-dark: hsl(210, 25%, 96%);
+  
+  --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 10px 10px -5px rgba(0, 0, 0, 0.05);
+
+  --input-bg: hsla(0, 0%, 100%, 0.8);
+  --input-bg-focus: hsla(0, 0%, 100%, 0.95);
+  --navbar-bg: hsla(210, 20%, 96%, 0.7);
+  --card-bg-alt: hsla(0, 0%, 100%, 0.45);
+  --card-bg-alt-hover: hsla(0, 0%, 100%, 0.55);
 }
 
 /* Reset and Base Styles */
@@ -206,7 +235,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .form-input, .form-textarea, .form-select {
-  background: hsla(225, 20%, 8%, 0.8);
+  background: var(--input-bg);
   border: 1px solid var(--border-glass);
   border-radius: 8px;
   padding: 12px 16px;
@@ -221,7 +250,7 @@ h1, h2, h3, h4, h5, h6 {
   outline: none;
   border-color: var(--primary);
   box-shadow: 0 0 0 3px var(--primary-glow);
-  background: hsla(225, 20%, 12%, 0.9);
+  background: var(--input-bg-focus);
 }
 
 .form-textarea {
@@ -369,7 +398,7 @@ h1, h2, h3, h4, h5, h6 {
   left: 0;
   right: 0;
   height: 72px;
-  background: hsla(225, 25%, 4%, 0.7);
+  background: var(--navbar-bg);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border-glass);
@@ -606,7 +635,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .device-row {
-  background: hsla(225, 20%, 8%, 0.4);
+  background: var(--card-bg-alt);
   border: 1px solid var(--border-glass);
   border-radius: 12px;
   padding: 16px;
@@ -656,7 +685,7 @@ h1, h2, h3, h4, h5, h6 {
   align-items: center;
   justify-content: space-between;
   padding: 10px 14px;
-  background: hsla(225, 20%, 8%, 0.45);
+  background: var(--card-bg-alt-hover);
   border: 1px solid var(--border-glass);
   border-radius: 8px;
 }
@@ -725,7 +754,7 @@ h1, h2, h3, h4, h5, h6 {
   height: 18px;
   border-radius: 4px;
   border: 1.5px solid var(--border-glass);
-  background: hsla(225, 20%, 8%, 0.8);
+  background: var(--input-bg);
   cursor: pointer;
   appearance: none;
   display: inline-flex;
