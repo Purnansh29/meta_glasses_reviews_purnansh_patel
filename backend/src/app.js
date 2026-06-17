@@ -18,23 +18,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Enable CORS
-const allowedOrigins = [
-  'http://localhost:5173',
-  'http://localhost:3000',
-  process.env.FRONTEND_URL
-].filter(Boolean);
+const allowedOrigins = process.env.ALLOWED_ORIGINS 
+  ? process.env.ALLOWED_ORIGINS.split(',') 
+  : ['http://localhost:5173', 'http://localhost:3000'];
 
 app.use(cors({
   origin: (origin, callback) => {
-    // Allow requests with no origin (like mobile apps, curl, postman)
-    if (!origin) return callback(null, true);
-    
-    const isAllowed = allowedOrigins.some(allowed => {
-      if (allowed === '*') return true;
-      return origin === allowed || origin.endsWith(allowed);
-    });
-
-    if (isAllowed || origin.endsWith('.vercel.app')) {
+    if (!origin || allowedOrigins.indexOf(origin) !== -1 || origin.includes('vercel.app')) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
