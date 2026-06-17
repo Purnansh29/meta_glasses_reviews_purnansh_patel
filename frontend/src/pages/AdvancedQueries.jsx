@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { api } from '../services/api';
-import { Database, Search, Terminal, ChevronRight } from 'lucide-react';
+import { Database, Search, Terminal, ChevronRight, Star, ThumbsUp, ShieldCheck } from 'lucide-react';
+import { ReviewCard } from '../components/ReviewCard';
 
 export const AdvancedQueries = () => {
   const [activeTab, setActiveTab] = useState('compare');
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState(null);
   const [error, setError] = useState(null);
+  const [showVisual, setShowVisual] = useState(true);
   const [params, setParams] = useState({
     user1: 'HebeZ',
     user2: 'Karla silva',
@@ -48,6 +50,176 @@ export const AdvancedQueries = () => {
     if (error) return <div className="error-banner">{error}</div>;
     if (!results) return <div style={{ color: 'var(--text-muted)' }}>Select a query on the left to view results here.</div>;
     
+    if (!showVisual) {
+      return (
+        <div style={{ background: 'hsla(0,0%,0%,0.3)', padding: '16px', borderRadius: '8px', overflowX: 'auto' }}>
+          <pre style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-main)' }}>
+            {JSON.stringify(results, null, 2)}
+          </pre>
+        </div>
+      );
+    }
+
+    const dataObj = results.data || {};
+    
+    // Case 1: User Comparison
+    if (dataObj.user1 && dataObj.user2) {
+      const { user1, user2 } = dataObj;
+      return (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px' }}>
+          {[user1, user2].map((usr, i) => (
+            <div key={usr.name} className="glass-card" style={{ padding: '20px', border: `1px solid ${i === 0 ? 'var(--primary)' : 'var(--secondary)'}`, position: 'relative', overflow: 'hidden' }}>
+              <div style={{ position: 'absolute', top: 0, right: 0, width: '80px', height: '80px', background: `radial-gradient(circle, ${i === 0 ? 'var(--primary)' : 'var(--secondary)'} 0%, transparent 70%)`, opacity: 0.15, pointerEvents: 'none' }}></div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
+                <div style={{ width: '44px', height: '44px', borderRadius: '50%', background: `linear-gradient(135deg, ${i === 0 ? 'var(--primary)' : 'var(--secondary)'}, var(--border-glass))`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '1.1rem', color: '#fff' }}>
+                  {usr.name.slice(0, 2).toUpperCase()}
+                </div>
+                <div>
+                  <h4 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-main)' }}>{usr.name}</h4>
+                  {usr.profile && (
+                    <a href={usr.profile} target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.75rem', color: 'var(--primary)', textDecoration: 'none', display: 'inline-block', maxWidth: '180px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      View Amazon Profile
+                    </a>
+                  )}
+                </div>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-glass)', paddingBottom: '8px' }}>
+                  <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>Average Rating</span>
+                  <span style={{ fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.9rem' }}>
+                    <Star size={14} fill="var(--warning)" color="var(--warning)" /> {usr.averageRating.toFixed(1)}
+                  </span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-glass)', paddingBottom: '8px' }}>
+                  <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>Total Reviews</span>
+                  <span style={{ fontWeight: 'bold', fontSize: '0.9rem' }}>{usr.totalReviews}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-glass)', paddingBottom: '8px' }}>
+                  <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>Helpful Votes</span>
+                  <span style={{ fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.9rem' }}>
+                    <ThumbsUp size={14} color="var(--primary)" /> {usr.totalHelpful}
+                  </span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-glass)', paddingBottom: '8px' }}>
+                  <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>Verified Purchase Rate</span>
+                  <span style={{ fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.9rem', color: 'var(--success)' }}>
+                    <ShieldCheck size={14} /> {usr.verifiedPercentage}%
+                  </span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      );
+    }
+
+    // Case 2: Rating Comparison
+    if (dataObj.rating1 && dataObj.rating2) {
+      const { rating1, rating2 } = dataObj;
+      return (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px' }}>
+          {[rating1, rating2].map((rt, i) => (
+            <div key={i} className="glass-card" style={{ padding: '20px', border: `1px solid ${i === 0 ? 'var(--primary)' : 'var(--secondary)'}` }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
+                <div style={{ width: '44px', height: '44px', borderRadius: '50%', background: 'linear-gradient(135deg, var(--warning), transparent)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '1.1rem', color: '#fff' }}>
+                  {rt.rating}★
+                </div>
+                <div>
+                  <h4 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-main)' }}>Rating {rt.rating} Star Group</h4>
+                  <span className="badge badge-secondary" style={{ fontSize: '0.7rem' }}>API Metric Comparison</span>
+                </div>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-glass)', paddingBottom: '8px' }}>
+                  <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>Total Reviews</span>
+                  <span style={{ fontWeight: 'bold', fontSize: '0.9rem' }}>{rt.totalReviews}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-glass)', paddingBottom: '8px' }}>
+                  <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>Average Helpfulness</span>
+                  <span style={{ fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.9rem' }}>
+                    <ThumbsUp size={14} color="var(--primary)" /> {rt.averageHelpful.toFixed(2)}
+                  </span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-glass)', paddingBottom: '8px' }}>
+                  <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>Verified Purchase Rate</span>
+                  <span style={{ fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.9rem', color: 'var(--success)' }}>
+                    <ShieldCheck size={14} /> {rt.verifiedPercentage}%
+                  </span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      );
+    }
+
+    // Case 3: Reviews list
+    const reviews = dataObj.reviews || dataObj.trendingReviews || dataObj.randomReviews || results.reviews;
+    if (Array.isArray(reviews)) {
+      if (reviews.length === 0) {
+        return <div style={{ color: 'var(--text-muted)', padding: '20px', textAlign: 'center' }}>No reviews found matching this query.</div>;
+      }
+      return (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', maxHeight: '55vh', overflowY: 'auto', paddingRight: '8px' }}>
+          {reviews.map((rev, i) => (
+            <ReviewCard key={rev._id || i} reviewData={rev} />
+          ))}
+        </div>
+      );
+    }
+
+    // Case 4: Statistics matrices
+    if (Array.isArray(dataObj.ratingsMetrics)) {
+      return (
+        <div className="glass-card" style={{ padding: '20px' }}>
+          <h4 style={{ marginBottom: '16px' }}>Ratings Distribution Metadata</h4>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            {dataObj.ratingsMetrics.map((item, i) => (
+              <div key={i} style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '6px', borderBottom: '1px solid var(--border-glass)' }}>
+                <span>{item.rating} Star</span>
+                <span>Count: <strong>{item.totalReviews}</strong></span>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    if (Array.isArray(dataObj.verifiedMetrics)) {
+      return (
+        <div className="glass-card" style={{ padding: '20px' }}>
+          <h4 style={{ marginBottom: '16px' }}>Verified Purchase Metadata</h4>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            {dataObj.verifiedMetrics.map((item, i) => (
+              <div key={i} style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '6px', borderBottom: '1px solid var(--border-glass)' }}>
+                <span>{item.verifiedPurchase ? 'Verified Purchase' : 'Unverified Purchase'}</span>
+                <span>Count: <strong>{item.totalReviews}</strong></span>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    // Case 5: Single entity objects
+    if (typeof dataObj === 'object' && Object.keys(dataObj).length > 0) {
+      const keys = Object.keys(dataObj);
+      if (keys.length > 0 && typeof dataObj[keys[0]] !== 'object') {
+        return (
+          <div className="glass-card" style={{ padding: '20px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {keys.map((k) => (
+                <div key={k} style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '8px', borderBottom: '1px solid var(--border-glass)' }}>
+                  <span style={{ textTransform: 'capitalize', color: 'var(--text-muted)', fontSize: '0.85rem' }}>{k.replace(/([A-Z])/g, ' $1')}</span>
+                  <span style={{ fontWeight: 'bold', fontSize: '0.9rem' }}>{String(dataObj[k])}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      }
+    }
+
     return (
       <div style={{ background: 'hsla(0,0%,0%,0.3)', padding: '16px', borderRadius: '8px', overflowX: 'auto' }}>
         <pre style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-main)' }}>
@@ -220,9 +392,29 @@ export const AdvancedQueries = () => {
         </div>
 
         <div className="glass-card" style={{ display: 'flex', flexDirection: 'column' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px', borderBottom: '1px solid var(--border-glass)', paddingBottom: '16px' }}>
-            <Terminal size={18} color="var(--primary)" />
-            <h3 style={{ margin: 0 }}>Query Results JSON Payload</h3>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', borderBottom: '1px solid var(--border-glass)', paddingBottom: '16px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Terminal size={18} color="var(--primary)" />
+              <h3 style={{ margin: 0 }}>Query Results</h3>
+            </div>
+            {results && (
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <button 
+                  className={`btn btn-sm ${showVisual ? 'btn-primary' : 'btn-secondary'}`} 
+                  onClick={() => setShowVisual(true)}
+                  style={{ padding: '4px 10px', fontSize: '0.75rem' }}
+                >
+                  Visual Board
+                </button>
+                <button 
+                  className={`btn btn-sm ${!showVisual ? 'btn-primary' : 'btn-secondary'}`} 
+                  onClick={() => setShowVisual(false)}
+                  style={{ padding: '4px 10px', fontSize: '0.75rem' }}
+                >
+                  Raw JSON
+                </button>
+              </div>
+            )}
           </div>
           <div style={{ flex: 1 }}>
             {renderResult()}
