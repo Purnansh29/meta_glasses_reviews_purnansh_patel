@@ -24,7 +24,7 @@ const allowedOrigins = process.env.ALLOWED_ORIGINS
 
 app.use(cors({
   origin: (origin, callback) => {
-    if (!origin || allowedOrigins.indexOf(origin) !== -1 || origin.includes('vercel.app')) {
+    if (!origin || allowedOrigins.indexOf(origin) !== -1 || origin.includes('vercel.app') || origin.includes('netlify.app')) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
